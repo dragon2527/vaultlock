@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VaultLock | Ultimate Secure Credential Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --danger: #f72585;
+            --success: #4cc9f0;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .logo i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .logo span {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav ul li {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        nav ul li:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-left: 3px solid var(--primary);
+        }
+
+        nav ul li.active {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-left: 3px solid var(--primary);
+        }
+
+        nav ul li i {
+            margin-right: 10px;
+            color: var(--gray);
+            width: 20px;
+            text-align: center;
+        }
+
+        nav ul li.active i, nav ul li:hover i {
+            color: var(--primary);
+        }
+
+        nav ul li span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background-color: #f5f7fa;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-menu img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-menu span {
+            font-weight: 500;
+            margin-right: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        /* Dashboard Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-header i {
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .card-1 .card-header i {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .card-2 .card-header i {
+            background-color: rgba(244, 63, 94, 0.1);
+            color: var(--danger);
+        }
+
+        .card-3 .card-header i {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .card-4 .card-header i {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .card-value {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 5px 0;
+        }
+
+        .card-change {
+            font-size: 12px;
+        }
+
+        .positive {
+            color: #10b981;
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        /* Credentials Table */
+        .credentials-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .table-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .search-box {
+            position: relative;
+            width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 15px 8px 35px;
+            border-radius: 6px;
+            border: 1px solid var(--gray-light);
+            font-size: 14px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px 20px;
+            font-weight: 500;
+            color: var(--gray);
+            font-size: 14px;
+            background-color: #f8f9fa;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .credential-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .credential-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: rgba(67, 97, 238, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+        }
+
+        .credential-name {
+            font-weight: 500;
+        }
+
+        .credential-username {
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: transparent;
+            border: none;
+        }
+
+        .action-btn:hover {
+            background-color: var(--gray-light);
+        }
+
+        .action-btn i {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .action-btn.edit:hover i {
+            color: var(--primary);
+        }
+
+        .action-btn.delete:hover i {
+            color: var(--danger);
+        }
+
+        .action-btn.view:hover i {
+            color: var(--success);
+        }
+
+        .strength {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .strength.strong {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .strength.medium {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .strength.weak {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-20px);
+            transition: all 0.3s;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--gray-light);
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Password Generator */
+        .password-generator {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .password-display {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .password-display input {
+            flex: 1;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .password-display .btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .password-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .option-group input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .option-group label {
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .option-group input[type="range"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .option-group span {
+            font-size: 13px;
+            min-width: 20px;
+        }
+
+        /* Password strength meter */
+        .password-strength-meter {
+            margin-top: 15px;
+        }
+
+        .strength-bar {
+            height: 5px;
+            background-color: #e9ecef;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .strength-indicator {
+            height: 100%;
+            width: 0%;
+            background-color: #ef4444;
+            border-radius: 3px;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .strength-text {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        /* Export section */
+        .export-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .export-option {
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-option:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .export-option i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .export-option h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .export-option p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .logo span, nav ul li span {
+                display: none;
+            }
+
+            .logo {
+                justify-content: center;
+                padding: 0 0 20px;
+            }
+
+            nav ul li {
+                justify-content: center;
+                padding: 12px 0;
+            }
+
+            nav ul li i {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                padding: 0 20px;
+            }
+
+            .logo {
+                padding: 0;
+                margin-bottom: 0;
+                border-bottom: none;
+            }
+
+            nav {
+                margin-left: auto;
+            }
+
+            nav ul {
+                display: flex;
+            }
+
+            nav ul li {
+                padding: 0 15px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            nav ul li.active {
+                border-left: none;
+                border-bottom: 3px solid var(--primary);
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .password-options {
+                grid-template-columns: 1fr;
+            }
+
+            .export-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-box {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .credential-icon {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-lock"></i>
+                <span>VaultLock</span>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active" data-section="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li data-section="credentials">
+                        <i class="fas fa-key"></i>
+                        <span>Credentials</span>
+                    </li>
+                    <li data-section="generator">
+                        <i class="fas fa-random"></i>
+                        <span>Password Generator</span>
+                    </li>
+                    <li data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>Dashboard</h1>
+                <div class="user-menu">
+                    <span>John Doe</span>
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=4361ee&color=fff" alt="User">
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div class="content-section" id="dashboard-section">
+                <div class="cards">
+                    <div class="card card-1">
+                        <div class="card-header">
+                            <i class="fas fa-key"></i>
+                            <div>
+                                <div class="card-title">Total Credentials</div>
+                                <div class="card-value">42</div>
+                                <div class="card-change positive">+5 this month</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-2">
+                        <div class="card-header">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <div class="card-title">Weak Passwords</div>
+                                <div class="card-value">8</div>
+                                <div class="card-change negative">+2 this month</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-3">
+                        <div class="card-header">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <div class="card-title">Security Score</div>
+                                <div class="card-value">86%</div>
+                                <div class="card-change positive">+5% this month</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-4">
+                        <div class="card-header">
+                            <i class="fas fa-sync-alt"></i>
+                            <div>
+                                <div class="card-title">Last Updated</div>
+                                <div class="card-value">2 days ago</div>
+                                <div class="card-change">Keep it fresh!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="credentials-table">
+                    <div class="table-header">
+                        <h2>Recent Credentials</h2>
+                        <button class="btn btn-primary" id="add-credential-btn">
+                            <i class="fas fa-plus"></i> Add Credential
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Credential</th>
+                                <th>Username</th>
+                                <th>Password Strength</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="credentials-table-body">
+                            <!-- Credentials will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Credentials Section (hidden by default) -->
+            <div class="content-section" id="credentials-section" style="display: none;">
+                <div class="credentials-table">
+                    <div class="table-header">
+                        <h2>All Credentials</h2>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search credentials..." id="search-credentials">
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Credential</th>
+                                <th>Username</th>
+                                <th>Password Strength</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-credentials-table-body">
+                            <!-- All credentials will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Password Generator Section (hidden by default) -->
+            <div class="content-section" id="generator-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-random"></i>
+                        <h2>Password Generator</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="password-generator">
+                            <div class="form-group">
+                                <label for="generated-password-length">Password Length: <span id="length-value">12</span></label>
+                                <input type="range" id="generated-password-length" min="6" max="32" value="12" class="form-control">
+                            </div>
+                            
+                            <div class="password-options">
+                                <div class="option-group">
+                                    <input type="checkbox" id="include-uppercase" checked>
+                                    <label for="include-uppercase">Uppercase (A-Z)</label>
+                                </div>
+                                <div class="option-group">
+                                    <input type="checkbox" id="include-lowercase" checked>
+                                    <label for="include-lowercase">Lowercase (a-z)</label>
+                                </div>
+                                <div class="option-group">
+                                    <input type="checkbox" id="include-numbers" checked>
+                                    <label for="include-numbers">Numbers (0-9)</label>
+                                </div>
+                                <div class="option-group">
+                                    <input type="checkbox" id="include-symbols">
+                                    <label for="include-symbols">Symbols (!@#$%)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="password-display">
+                                <input type="text" id="generated-password" class="form-control" readonly>
+                                <button class="btn btn-primary" id="copy-password-btn">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="generate-password-btn" style="width: 100%;">
+                                <i class="fas fa-sync-alt"></i> Generate Password
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h2>Password Strength Meter</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="password-to-check">Test your password strength:</label>
+                            <div class="input-with-icon">
+                                <input type="password" id="password-to-check" class="form-control" placeholder="Enter a password to test">
+                                <i class="fas fa-eye" id="toggle-password-visibility"></i>
+                            </div>
+                        </div>
+                        <div class="password-strength-meter">
+                            <div class="strength-bar">
+                                <div class="strength-indicator" id="strength-indicator"></div>
+                            </div>
+                            <div class="strength-text" id="strength-text">Very Weak</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section (hidden by default) -->
+            <div class="content-section" id="settings-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-cog"></i>
+                        <h2>Security Settings</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="security-settings-form">
+                            <div class="form-group">
+                                <label for="current-master-password">Current Master Password</label>
+                                <input type="password" id="current-master-password" class="form-control" placeholder="Enter current master password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-master-password">New Master Password</label>
+                                <input type="password" id="new-master-password" class="form-control" placeholder="Enter new master password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-master-password">Confirm New Master Password</label>
+                                <input type="password" id="confirm-master-password" class="form-control" placeholder="Confirm new master password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="auto-lock">Auto-lock after</label>
+                                <select id="auto-lock" class="form-control">
+                                    <option value="5">5 minutes</option>
+                                    <option value="15" selected>15 minutes</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="0">Never (not recommended)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="enable-2fa"> Enable Two-Factor Authentication
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="backup-encrypted" checked> Create encrypted backup
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <i class="fas fa-file-export"></i>
+                        <h2>Export Data</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="export-options">
+                            <div class="export-option" id="export-json">
+                                <i class="fas fa-file-code"></i>
+                                <h4>Export as JSON</h4>
+                                <p>Standard format for data interchange</p>
+                            </div>
+                            <div class="export-option" id="export-csv">
+                                <i class="fas fa-file-csv"></i>
+                                <h4>Export as CSV</h4>
+                                <p>Comma-separated values for spreadsheets</p>
+                            </div>
+                            <div class="export-option" id="export-encrypted">
+                                <i class="fas fa-lock"></i>
+                                <h4>Encrypted Backup</h4>
+                                <p>AES-256 encrypted backup file</p>
+                            </div>
+                            <div class="export-option" id="export-print">
+                                <i class="fas fa-print"></i>
+                                <h4>Print</h4>
+                                <p>Print your credentials securely</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Credential Modal -->
+    <div class="modal" id="add-credential-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Credential</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-credential-form">
+                    <div class="form-group">
+                        <label for="credential-name">Service/Website Name</label>
+                        <input type="text" id="credential-name" class="form-control" placeholder="e.g. Google" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="credential-url">Website URL (optional)</label>
+                        <input type="url" id="credential-url" class="form-control" placeholder="https://">
+                    </div>
+                    <div class="form-group">
+                        <label for="credential-username">Username/Email</label>
+                        <input type="text" id="credential-username" class="form-control" placeholder="Enter username or email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="credential-password">Password</label>
+                        <div class="input-with-icon">
+                            <input type="password" id="credential-password" class="form-control" placeholder="Enter password" required>
+                            <i class="fas fa-eye" id="toggle-credential-password"></i>
+                        </div>
+                        <div class="strength" id="credential-password-strength" style="margin-top: 5px;">Strength: None</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="credential-notes">Notes (optional)</label>
+                        <textarea id="credential-notes" class="form-control" rows="3" placeholder="Any additional notes"></textarea>
+                    </div>
+                </form>
+                
+                <div class="password-generator">
+                    <div class="password-display">
+                        <input type="text" id="modal-generated-password" class="form-control" placeholder="Generate a strong password" readonly>
+                        <button class="btn btn-primary" id="modal-generate-password-btn">
+                            <i class="fas fa-random"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-outline" id="use-generated-password" style="width: 100%; margin-top: 10px;">
+                        Use This Password
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="save-credential-btn">Save Credential</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Credential Modal -->
+    <div class="modal" id="view-credential-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="view-credential-title">Credential Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="credential-item" style="margin-bottom: 20px;">
+                    <div class="credential-icon">
+                        <i class="fas fa-key" id="view-credential-icon"></i>
+                    </div>
+                    <div>
+                        <div class="credential-name" id="view-credential-name"></div>
+                        <div class="credential-username" id="view-credential-username"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Website URL</label>
+                    <div class="form-control" style="background-color: #f8f9fa;" id="view-credential-url"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-with-icon">
+                        <input type="password" class="form-control" id="view-credential-password" readonly>
+                        <i class="fas fa-eye" id="toggle-view-password"></i>
+                    </div>
+                    <div class="strength" id="view-credential-strength" style="margin-top: 5px;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Notes</label>
+                    <div class="form-control" style="background-color: #f8f9fa; min-height: 60px;" id="view-credential-notes"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Last Updated</label>
+                    <div class="form-control" style="background-color: #f8f9fa;" id="view-credential-updated"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="export-modal-title">Export Data</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="export-options-content">
+                    <div class="form-group" id="export-format-group" style="display: none;">
+                        <label>Export Format</label>
+                        <div class="form-control" style="background-color: #f8f9fa;" id="export-format-display"></div>
+                    </div>
+                    
+                    <div class="form-group" id="export-password-group">
+                        <label for="export-password">Encryption Password (optional)</label>
+                        <input type="password" id="export-password" class="form-control" placeholder="Leave blank for no encryption">
+                        <small class="text-muted">For encrypted exports, you'll need this password to import the data.</small>
+                    </div>
+                    
+                    <div class="form-group" id="export-include-group">
+                        <label>Include in Export</label>
+                        <div style="margin-top: 10px;">
+                            <label style="display: block; margin-bottom: 10px;">
+                                <input type="checkbox" id="include-passwords" checked> Include passwords
+                            </label>
+                            <label style="display: block; margin-bottom: 10px;">
+                                <input type="checkbox" id="include-notes" checked> Include notes
+                            </label>
+                            <label style="display: block;">
+                                <input type="checkbox" id="include-settings"> Include settings
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="export-result" style="display: none;">
+                    <div class="form-group">
+                        <label>Export Successful</label>
+                        <div class="form-control" style="background-color: #f8f9fa; min-height: 100px; font-family: monospace; white-space: pre-wrap;" id="export-data-preview"></div>
+                    </div>
+                    <button class="btn btn-primary" id="download-export-btn" style="width: 100%; margin-top: 10px;">
+                        <i class="fas fa-download"></i> Download File
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="generate-export-btn">Generate Export</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lock Screen (hidden by default) -->
+    <div class="modal" id="lock-screen" style="background-color: #212529; z-index: 2000;">
+        <div class="modal-content" style="max-width: 400px; background-color: transparent; color: white; box-shadow: none;">
+            <div class="modal-header" style="justify-content: center; border-bottom: none;">
+                <div class="logo" style="border-bottom: none; padding: 0; margin: 0;">
+                    <i class="fas fa-lock" style="font-size: 40px; color: white;"></i>
+                    <span style="font-size: 24px; color: white;">VaultLock</span>
+                </div>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <p style="margin-bottom: 20px;">Your session has been locked for security</p>
+                <div class="form-group">
+                    <input type="password" id="unlock-password" class="form-control" placeholder="Enter master password" style="text-align: center;">
+                </div>
+                <button class="btn btn-primary" id="unlock-btn" style="width: 100%;">Unlock</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for credentials
+        const sampleCredentials = [
+            {
+                id: 1,
+                name: "Google Account",
+                url: "https://google.com",
+                username: "john.doe@gmail.com",
+                password: "G00gl3P@ss",
+                strength: "strong",
+                notes: "Main personal account",
+                updated: "2023-05-15"
+            },
+            {
+                id: 2,
+                name: "GitHub",
+                url: "https://github.com",
+                username: "johndoe",
+                password: "dev12345",
+                strength: "weak",
+                notes: "Work projects",
+                updated: "2023-06-02"
+            },
+            {
+                id: 3,
+                name: "Netflix",
+                url: "https://netflix.com",
+                username: "john@doe.com",
+                password: "Movie$2023",
+                strength: "medium",
+                notes: "Family account",
+                updated: "2023-04-28"
+            },
+            {
+                id: 4,
+                name: "Amazon",
+                url: "https://amazon.com",
+                username: "john_doe",
+                password: "Amz!2023",
+                strength: "medium",
+                notes: "Shopping account",
+                updated: "2023-05-30"
+            },
+            {
+                id: 5,
+                name: "Twitter",
+                url: "https://twitter.com",
+                username: "@johndoe",
+                password: "Tw1tt3rP@ss",
+                strength: "strong",
+                notes: "",
+                updated: "2023-06-10"
+            }
+        ];
+
+        // DOM Elements
+        const sidebarLinks = document.querySelectorAll('.sidebar ul li');
+        const contentSections = document.querySelectorAll('.content-section');
+        const addCredentialBtn = document.getElementById('add-credential-btn');
+        const addCredentialModal = document.getElementById('add-credential-modal');
+        const viewCredentialModal = document.getElementById('view-credential-modal');
+        const exportModal = document.getElementById('export-modal');
+        const modalCloseBtns = document.querySelectorAll('.modal-close');
+        const saveCredentialBtn = document.getElementById('save-credential-btn');
+        const addCredentialForm = document.getElementById('add-credential-form');
+        const credentialsTableBody = document.getElementById('credentials-table-body');
+        const allCredentialsTableBody = document.getElementById('all-credentials-table-body');
+        const searchCredentialsInput = document.getElementById('search-credentials');
+        const generatePasswordBtn = document.getElementById('generate-password-btn');
+        const copyPasswordBtn = document.getElementById('copy-password-btn');
+        const generatedPasswordInput = document.getElementById('generated-password');
+        const passwordToCheckInput = document.getElementById('password-to-check');
+        const togglePasswordVisibilityBtn = document.getElementById('toggle-password-visibility');
+        const strengthIndicator = document.getElementById('strength-indicator');
+        const strengthText = document.getElementById('strength-text');
+        const lengthSlider = document.getElementById('generated-password-length');
+        const lengthValue = document.getElementById('length-value');
+        const modalGeneratePasswordBtn = document.getElementById('modal-generate-password-btn');
+        const modalGeneratedPasswordInput = document.getElementById('modal-generated-password');
+        const useGeneratedPasswordBtn = document.getElementById('use-generated-password');
+        const toggleCredentialPasswordBtn = document.getElementById('toggle-credential-password');
+        const credentialPasswordInput = document.getElementById('credential-password');
+        const credentialPasswordStrength = document.getElementById('credential-password-strength');
+        const toggleViewPasswordBtn = document.getElementById('toggle-view-password');
+        const viewCredentialPasswordInput = document.getElementById('view-credential-password');
+        const lockScreen = document.getElementById('lock-screen');
+        const unlockBtn = document.getElementById('unlock-btn');
+        const unlockPasswordInput = document.getElementById('unlock-password');
+        const securitySettingsForm = document.getElementById('security-settings-form');
+        const exportJsonBtn = document.getElementById('export-json');
+        const exportCsvBtn = document.getElementById('export-csv');
+        const exportEncryptedBtn = document.getElementById('export-encrypted');
+        const exportPrintBtn = document.getElementById('export-print');
+        const generateExportBtn = document.getElementById('generate-export-btn');
+        const downloadExportBtn = document.getElementById('download-export-btn');
+        const exportFormatDisplay = document.getElementById('export-format-display');
+
+        // Current state
+        let credentials = [...sampleCredentials];
+        let locked = false;
+        let currentExportFormat = '';
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load credentials
+            renderCredentials();
+            renderAllCredentials();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Simulate auto-lock after 30 seconds for demo purposes
+            // In a real app, this would be based on user activity
+            setTimeout(() => {
+                if (!locked) {
+                    lockApp();
+                }
+            }, 30000);
+        });
+
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Sidebar navigation
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const section = link.getAttribute('data-section');
+                    showSection(section);
+                    
+                    // Update active state
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+
+            // Modal open/close
+            addCredentialBtn.addEventListener('click', () => {
+                addCredentialModal.classList.add('active');
+            });
+
+            modalCloseBtns.forEach(btn => {
+                btn.addEventListener('click', closeAllModals);
+            });
+
+            // Save credential
+            saveCredentialBtn.addEventListener('click', saveCredential);
+
+            // Search credentials
+            searchCredentialsInput.addEventListener('input', filterCredentials);
+
+            // Password generator
+            generatePasswordBtn.addEventListener('click', generatePassword);
+            copyPasswordBtn.addEventListener('click', copyPassword);
+            lengthSlider.addEventListener('input', updateLengthValue);
+            
+            // Password strength checker
+            passwordToCheckInput.addEventListener('input', checkPasswordStrength);
+            togglePasswordVisibilityBtn.addEventListener('click', togglePasswordVisibility);
+            
+            // Modal password generator
+            modalGeneratePasswordBtn.addEventListener('click', generateModalPassword);
+            useGeneratedPasswordBtn.addEventListener('click', useGeneratedPassword);
+            
+            // Toggle credential password visibility
+            toggleCredentialPasswordBtn.addEventListener('click', toggleCredentialPasswordVisibility);
+            
+            // Check password strength when typing in credential password
+            credentialPasswordInput.addEventListener('input', () => {
+                const strength = checkPasswordStrength(credentialPasswordInput.value);
+                credentialPasswordStrength.textContent = `Strength: ${strength.charAt(0).toUpperCase() + strength.slice(1)}`;
+                credentialPasswordStrength.className = 'strength ' + strength;
+            });
+            
+            // Toggle view password visibility
+            toggleViewPasswordBtn.addEventListener('click', toggleViewPasswordVisibility);
+            
+            // Unlock app
+            unlockBtn.addEventListener('click', unlockApp);
+            unlockPasswordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    unlockApp();
+                }
+            });
+            
+            // Security settings form
+            securitySettingsForm.addEventListener('submit', saveSecuritySettings);
+            
+            // Export buttons
+            exportJsonBtn.addEventListener('click', () => openExportModal('json'));
+            exportCsvBtn.addEventListener('click', () => openExportModal('csv'));
+            exportEncryptedBtn.addEventListener('click', () => openExportModal('encrypted'));
+            exportPrintBtn.addEventListener('click', () => openExportModal('print'));
+            
+            // Export generation
+            generateExportBtn.addEventListener('click', generateExport);
+            downloadExportBtn.addEventListener('click', downloadExport);
+        }
+
+        // Show specific section
+        function showSection(section) {
+            contentSections.forEach(sec => {
+                sec.style.display = 'none';
+            });
+            
+            document.getElementById(`${section}-section`).style.display = 'block';
+        }
+
+        // Render recent credentials
+        function renderCredentials() {
+            credentialsTableBody.innerHTML = '';
+            
+            // Sort by most recently updated and get top 5
+            const recentCredentials = [...credentials]
+                .sort((a, b) => new Date(b.updated) - new Date(a.updated))
+                .slice(0, 5);
+            
+            recentCredentials.forEach(cred => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="credential-item">
+                            <div class="credential-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <div>
+                                <div class="credential-name">${cred.name}</div>
+                                <div class="credential-username">${cred.username}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${cred.username}</td>
+                    <td><span class="strength ${cred.strength}">${cred.strength.charAt(0).toUpperCase() + cred.strength.slice(1)}</span></td>
+                    <td>${formatDate(cred.updated)}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn view" data-id="${cred.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn edit" data-id="${cred.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" data-id="${cred.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                credentialsTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            addActionButtonListeners();
+        }
+
+        // Render all credentials
+        function renderAllCredentials() {
+            allCredentialsTableBody.innerHTML = '';
+            
+            credentials.forEach(cred => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="credential-item">
+                            <div class="credential-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <div>
+                                <div class="credential-name">${cred.name}</div>
+                                <div class="credential-username">${cred.username}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${cred.username}</td>
+                    <td><span class="strength ${cred.strength}">${cred.strength.charAt(0).toUpperCase() + cred.strength.slice(1)}</span></td>
+                    <td>${formatDate(cred.updated)}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn view" data-id="${cred.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn edit" data-id="${cred.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" data-id="${cred.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                allCredentialsTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            addActionButtonListeners();
+        }
+
+        // Add event listeners to action buttons
+        function addActionButtonListeners() {
+            document.querySelectorAll('.action-btn.view').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    viewCredential(id);
+                });
+            });
+            
+            document.querySelectorAll('.action-btn.edit').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    editCredential(id);
+                });
+            });
+            
+            document.querySelectorAll('.action-btn.delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    deleteCredential(id);
+                });
+            });
+        }
+
+        // View credential details
+        function viewCredential(id) {
+            const credential = credentials.find(c => c.id === id);
+            if (!credential) return;
+            
+            document.getElementById('view-credential-title').textContent = credential.name;
+            document.getElementById('view-credential-name').textContent = credential.name;
+            document.getElementById('view-credential-username').textContent = credential.username;
+            document.getElementById('view-credential-url').textContent = credential.url || 'N/A';
+            document.getElementById('view-credential-password').value = credential.password;
+            document.getElementById('view-credential-notes').textContent = credential.notes || 'No notes';
+            document.getElementById('view-credential-updated').textContent = formatDate(credential.updated);
+            
+            // Set strength indicator
+            const strengthElement = document.getElementById('view-credential-strength');
+            strengthElement.textContent = credential.strength.charAt(0).toUpperCase() + credential.strength.slice(1);
+            strengthElement.className = 'strength ' + credential.strength;
+            
+            // Set icon based on URL
+            const iconElement = document.getElementById('view-credential-icon');
+            if (credential.url) {
+                // Try to get favicon (this would work for some major sites)
+                const domain = new URL(credential.url).hostname.replace('www.', '');
+                iconElement.className = 'fas fa-globe';
+                
+                // Special cases for common services
+                if (domain.includes('google')) iconElement.className = 'fab fa-google';
+                else if (domain.includes('github')) iconElement.className = 'fab fa-github';
+                else if (domain.includes('twitter')) iconElement.className = 'fab fa-twitter';
+                else if (domain.includes('facebook')) iconElement.className = 'fab fa-facebook';
+                else if (domain.includes('amazon')) iconElement.className = 'fab fa-amazon';
+                else if (domain.includes('netflix')) iconElement.className = 'fab fa-netflix';
+            } else {
+                iconElement.className = 'fas fa-key';
+            }
+            
+            viewCredentialModal.classList.add('active');
+        }
+
+        // Edit credential
+        function editCredential(id) {
+            // For simplicity, we're just opening the add credential modal with the data
+            // In a real app, you might have a separate edit modal or reuse the add modal
+            const credential = credentials.find(c => c.id === id);
+            if (!credential) return;
+            
+            document.getElementById('credential-name').value = credential.name;
+            document.getElementById('credential-url').value = credential.url || '';
+            document.getElementById('credential-username').value = credential.username;
+            document.getElementById('credential-password').value = credential.password;
+            document.getElementById('credential-notes').value = credential.notes || '';
+            
+            // Update password strength display
+            const strength = calculatePasswordStrength(credential.password);
+            credentialPasswordStrength.textContent = `Strength: ${strength.charAt(0).toUpperCase() + strength.slice(1)}`;
+            credentialPasswordStrength.className = 'strength ' + strength;
+            
+            // Change the modal title and save button text
+            document.querySelector('#add-credential-modal .modal-header h3').textContent = 'Edit Credential';
+            document.getElementById('save-credential-btn').textContent = 'Update Credential';
+            
+            // Set a data attribute to indicate we're editing
+            document.getElementById('save-credential-btn').setAttribute('data-edit-id', id);
+            
+            addCredentialModal.classList.add('active');
+        }
+
+        // Delete credential
+        function deleteCredential(id) {
+            if (confirm('Are you sure you want to delete this credential?')) {
+                credentials = credentials.filter(c => c.id !== id);
+                renderCredentials();
+                renderAllCredentials();
+                
+                // Show notification
+                showNotification('Credential deleted successfully', 'success');
+            }
+        }
+
+        // Save credential (add or edit)
+        function saveCredential() {
+            const name = document.getElementById('credential-name').value.trim();
+            const url = document.getElementById('credential-url').value.trim();
+            const username = document.getElementById('credential-username').value.trim();
+            const password = document.getElementById('credential-password').value.trim();
+            const notes = document.getElementById('credential-notes').value.trim();
+            
+            if (!name || !username || !password) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Check if we're editing
+            const editId = saveCredentialBtn.getAttribute('data-edit-id');
+            
+            if (editId) {
+                // Update existing credential
+                const index = credentials.findIndex(c => c.id === parseInt(editId));
+                if (index !== -1) {
+                    credentials[index] = {
+                        ...credentials[index],
+                        name,
+                        url,
+                        username,
+                        password,
+                        notes,
+                        updated: new Date().toISOString().split('T')[0],
+                        strength: calculatePasswordStrength(password)
+                    };
+                    
+                    showNotification('Credential updated successfully', 'success');
+                }
+            } else {
+                // Add new credential
+                const newCredential = {
+                    id: credentials.length > 0 ? Math.max(...credentials.map(c => c.id)) + 1 : 1,
+                    name,
+                    url,
+                    username,
+                    password,
+                    strength: calculatePasswordStrength(password),
+                    notes,
+                    updated: new Date().toISOString().split('T')[0]
+                };
+                
+                credentials.push(newCredential);
+                showNotification('Credential added successfully', 'success');
+            }
+            
+            // Reset form and close modal
+            addCredentialForm.reset();
+            closeAllModals();
+            
+            // Remove edit mode
+            saveCredentialBtn.removeAttribute('data-edit-id');
+            document.querySelector('#add-credential-modal .modal-header h3').textContent = 'Add New Credential';
+            document.getElementById('save-credential-btn').textContent = 'Save Credential';
+            
+            // Refresh tables
+            renderCredentials();
+            renderAllCredentials();
+        }
+
+        // Filter credentials based on search input
+        function filterCredentials() {
+            const searchTerm = searchCredentialsInput.value.toLowerCase();
+            
+            if (!searchTerm) {
+                renderAllCredentials();
+                return;
+            }
+            
+            const filtered = credentials.filter(cred => 
+                cred.name.toLowerCase().includes(searchTerm) || 
+                cred.username.toLowerCase().includes(searchTerm) ||
+                (cred.notes && cred.notes.toLowerCase().includes(searchTerm))
+            );
+            
+            allCredentialsTableBody.innerHTML = '';
+            
+            filtered.forEach(cred => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="credential-item">
+                            <div class="credential-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <div>
+                                <div class="credential-name">${cred.name}</div>
+                                <div class="credential-username">${cred.username}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${cred.username}</td>
+                    <td><span class="strength ${cred.strength}">${cred.strength.charAt(0).toUpperCase() + cred.strength.slice(1)}</span></td>
+                    <td>${formatDate(cred.updated)}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn view" data-id="${cred.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn edit" data-id="${cred.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" data-id="${cred.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                allCredentialsTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            addActionButtonListeners();
+        }
+
+        // Generate a random password
+        function generatePassword() {
+            const length = parseInt(lengthSlider.value);
+            const includeUppercase = document.getElementById('include-uppercase').checked;
+            const includeLowercase = document.getElementById('include-lowercase').checked;
+            const includeNumbers = document.getElementById('include-numbers').checked;
+            const includeSymbols = document.getElementById('include-symbols').checked;
+            
+            let charset = '';
+            if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (includeNumbers) charset += '0123456789';
+            if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (!charset) {
+                showNotification('Please select at least one character set', 'error');
+                return;
+            }
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            
+            generatedPasswordInput.value = password;
+            checkPasswordStrength(password);
+        }
+
+        // Generate password for the modal
+        function generateModalPassword() {
+            const length = 16; // Default length for modal
+            const includeUppercase = true;
+            const includeLowercase = true;
+            const includeNumbers = true;
+            const includeSymbols = true;
+            
+            let charset = '';
+            if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (includeNumbers) charset += '0123456789';
+            if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            
+            modalGeneratedPasswordInput.value = password;
+        }
+
+        // Use the generated password in the modal
+        function useGeneratedPassword() {
+            if (modalGeneratedPasswordInput.value) {
+                credentialPasswordInput.value = modalGeneratedPasswordInput.value;
+                modalGeneratedPasswordInput.value = '';
+                
+                // Update password strength display
+                const strength = calculatePasswordStrength(credentialPasswordInput.value);
+                credentialPasswordStrength.textContent = `Strength: ${strength.charAt(0).toUpperCase() + strength.slice(1)}`;
+                credentialPasswordStrength.className = 'strength ' + strength;
+                
+                // Show notification
+                showNotification('Generated password applied', 'success');
+            }
+        }
+
+        // Copy password to clipboard
+        function copyPassword() {
+            if (generatedPasswordInput.value) {
+                navigator.clipboard.writeText(generatedPasswordInput.value)
+                    .then(() => {
+                        showNotification('Password copied to clipboard', 'success');
+                    })
+                    .catch(err => {
+                        showNotification('Failed to copy password', 'error');
+                        console.error('Failed to copy password: ', err);
+                    });
+            }
+        }
+
+        // Update length value display
+        function updateLengthValue() {
+            lengthValue.textContent = lengthSlider.value;
+        }
+
+        // Check password strength
+        function checkPasswordStrength(password = null) {
+            const pwd = password || passwordToCheckInput.value;
+            
+            if (!pwd) {
+                strengthIndicator.style.width = '0%';
+                strengthText.textContent = 'Very Weak';
+                return 'none';
+            }
+            
+            // Calculate strength (simplified for demo)
+            let strength = 0;
+            
+            // Length
+            if (pwd.length >= 8) strength += 1;
+            if (pwd.length >= 12) strength += 1;
+            if (pwd.length >= 16) strength += 1;
+            
+            // Character variety
+            if (/[A-Z]/.test(pwd)) strength += 1;
+            if (/[a-z]/.test(pwd)) strength += 1;
+            if (/[0-9]/.test(pwd)) strength += 1;
+            if (/[^A-Za-z0-9]/.test(pwd)) strength += 1;
+            
+            // Common patterns (negative)
+            if (pwd.length < 6) strength = 0;
+            if (pwd === 'password' || pwd === '123456') strength = 0;
+            
+            // Map to percentage and text
+            let percentage = 0;
+            let text = 'Very Weak';
+            
+            if (strength <= 2) {
+                percentage = 25;
+                text = 'Weak';
+            } else if (strength <= 4) {
+                percentage = 50;
+                text = 'Medium';
+            } else if (strength <= 6) {
+                percentage = 75;
+                text = 'Strong';
+            } else {
+                percentage = 100;
+                text = 'Very Strong';
+            }
+            
+            strengthIndicator.style.width = `${percentage}%`;
+            strengthText.textContent = text;
+            
+            // Set color based on strength
+            if (percentage <= 25) {
+                strengthIndicator.style.backgroundColor = '#ef4444';
+            } else if (percentage <= 50) {
+                strengthIndicator.style.backgroundColor = '#f59e0b';
+            } else if (percentage <= 75) {
+                strengthIndicator.style.backgroundColor = '#3b82f6';
+            } else {
+                strengthIndicator.style.backgroundColor = '#10b981';
+            }
+            
+            return text.toLowerCase().replace('very ', '');
+        }
+
+        // Calculate password strength for credential
+        function calculatePasswordStrength(password) {
+            const strength = checkPasswordStrength(password);
+            return strength || 'weak';
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            if (passwordToCheckInput.type === 'password') {
+                passwordToCheckInput.type = 'text';
+                togglePasswordVisibilityBtn.classList.remove('fa-eye');
+                togglePasswordVisibilityBtn.classList.add('fa-eye-slash');
+            } else {
+                passwordToCheckInput.type = 'password';
+                togglePasswordVisibilityBtn.classList.remove('fa-eye-slash');
+                togglePasswordVisibilityBtn.classList.add('fa-eye');
+            }
+        }
+
+        // Toggle credential password visibility
+        function toggleCredentialPasswordVisibility() {
+            if (credentialPasswordInput.type === 'password') {
+                credentialPasswordInput.type = 'text';
+                toggleCredentialPasswordBtn.classList.remove('fa-eye');
+                toggleCredentialPasswordBtn.classList.add('fa-eye-slash');
+            } else {
+                credentialPasswordInput.type = 'password';
+                toggleCredentialPasswordBtn.classList.remove('fa-eye-slash');
+                toggleCredentialPasswordBtn.classList.add('fa-eye');
+            }
+        }
+
+        // Toggle view password visibility
+        function toggleViewPasswordVisibility() {
+            if (viewCredentialPasswordInput.type === 'password') {
+                viewCredentialPasswordInput.type = 'text';
+                toggleViewPasswordBtn.classList.remove('fa-eye');
+                toggleViewPasswordBtn.classList.add('fa-eye-slash');
+            } else {
+                viewCredentialPasswordInput.type = 'password';
+                toggleViewPasswordBtn.classList.remove('fa-eye-slash');
+                toggleViewPasswordBtn.classList.add('fa-eye');
+            }
+        }
+
+        // Close all modals
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            
+            // Reset export modal
+            document.getElementById('export-options-content').style.display = 'block';
+            document.getElementById('export-result').style.display = 'none';
+            document.getElementById('export-password').value = '';
+            document.getElementById('export-format-group').style.display = 'none';
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // In a real app, you might use a proper notification library
+            alert(`${type.toUpperCase()}: ${message}`);
+        }
+
+        // Lock the application
+        function lockApp() {
+            locked = true;
+            lockScreen.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Unlock the application
+        function unlockApp() {
+            const password = unlockPasswordInput.value;
+            
+            // In a real app, you would verify the password against the master password
+            // For this demo, we'll just check if something was entered
+            if (password) {
+                locked = false;
+                lockScreen.classList.remove('active');
+                document.body.style.overflow = '';
+                unlockPasswordInput.value = '';
+                
+                // Show notification
+                showNotification('Application unlocked', 'success');
+            } else {
+                showNotification('Please enter your password', 'error');
+            }
+        }
+
+        // Save security settings
+        function saveSecuritySettings(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('current-master-password').value;
+            const newPassword = document.getElementById('new-master-password').value;
+            const confirmPassword = document.getElementById('confirm-master-password').value;
+            const autoLock = document.getElementById('auto-lock').value;
+            const enable2FA = document.getElementById('enable-2fa').checked;
+            const backupEncrypted = document.getElementById('backup-encrypted').checked;
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('New passwords do not match', 'error');
+                return;
+            }
+            
+            // In a real app, you would verify the current password and save the new one
+            // For this demo, we'll just show a success message
+            showNotification('Security settings saved successfully', 'success');
+            
+            // Reset form
+            securitySettingsForm.reset();
+        }
+
+        // Open export modal with selected format
+        function openExportModal(format) {
+            currentExportFormat = format;
+            exportModal.classList.add('active');
+            
+            // Set the format display
+            let formatName = '';
+            switch(format) {
+                case 'json':
+                    formatName = 'JSON';
+                    break;
+                case 'csv':
+                    formatName = 'CSV';
+                    break;
+                case 'encrypted':
+                    formatName = 'Encrypted File';
+                    break;
+                case 'print':
+                    formatName = 'Print';
+                    break;
+            }
+            
+            exportFormatDisplay.textContent = formatName;
+            document.getElementById('export-format-group').style.display = 'block';
+            
+            // Hide password field for print
+            if (format === 'print') {
+                document.getElementById('export-password-group').style.display = 'none';
+            } else {
+                document.getElementById('export-password-group').style.display = 'block';
+            }
+        }
+
+        // Generate export data
+        function generateExport() {
+            const includePasswords = document.getElementById('include-passwords').checked;
+            const includeNotes = document.getElementById('include-notes').checked;
+            const includeSettings = document.getElementById('include-settings').checked;
+            const exportPassword = document.getElementById('export-password').value;
+            
+            // Prepare data to export
+            let exportData = {
+                credentials: credentials.map(cred => ({
+                    name: cred.name,
+                    url: cred.url,
+                    username: cred.username,
+                    password: includePasswords ? cred.password : '********',
+                    strength: cred.strength,
+                    notes: includeNotes ? cred.notes : '',
+                    updated: cred.updated
+                })),
+                metadata: {
+                    exportedAt: new Date().toISOString(),
+                    totalCredentials: credentials.length
+                }
+            };
+            
+            // Add settings if requested
+            if (includeSettings) {
+                exportData.settings = {
+                    autoLock: document.getElementById('auto-lock').value,
+                    enable2FA: document.getElementById('enable-2fa').checked,
+                    backupEncrypted: document.getElementById('backup-encrypted').checked
+                };
+            }
+            
+            // Format the data based on the selected format
+            let formattedData = '';
+            let filename = 'vaultlock-export';
+            
+            switch(currentExportFormat) {
+                case 'json':
+                    formattedData = JSON.stringify(exportData, null, 2);
+                    filename += '.json';
+                    break;
+                case 'csv':
+                    // Convert to CSV
+                    let csv = 'Name,URL,Username,Password,Strength,Notes,Last Updated\n';
+                    exportData.credentials.forEach(cred => {
+                        csv += `"${cred.name}","${cred.url || ''}","${cred.username}","${cred.password}","${cred.strength}","${cred.notes || ''}","${cred.updated}"\n`;
+                    });
+                    formattedData = csv;
+                    filename += '.csv';
+                    break;
+                case 'encrypted':
+                    // In a real app, you would encrypt the data
+                    formattedData = `ENCRYPTED DATA (DEMO)\n\n` + JSON.stringify(exportData, null, 2);
+                    filename += '.enc';
+                    break;
+                case 'print':
+                    // Prepare for printing
+                    formattedData = `VAULTLOCK CREDENTIALS EXPORT\n\n`;
+                    exportData.credentials.forEach(cred => {
+                        formattedData += `Name: ${cred.name}\n`;
+                        formattedData += `URL: ${cred.url || 'N/A'}\n`;
+                        formattedData += `Username: ${cred.username}\n`;
+                        formattedData += `Password: ${cred.password}\n`;
+                        formattedData += `Strength: ${cred.strength}\n`;
+                        if (cred.notes) formattedData += `Notes: ${cred.notes}\n`;
+                        formattedData += `Last Updated: ${cred.updated}\n\n`;
+                    });
+                    break;
+            }
+            
+            // Show the result
+            document.getElementById('export-options-content').style.display = 'none';
+            document.getElementById('export-result').style.display = 'block';
+            document.getElementById('export-data-preview').textContent = formattedData;
+            
+            // For print, immediately print the data
+            if (currentExportFormat === 'print') {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write('<pre>' + formattedData + '</pre>');
+                printWindow.document.close();
+                printWindow.print();
+            }
+        }
+
+        // Download the export file
+        function downloadExport() {
+            const data = document.getElementById('export-data-preview').textContent;
+            const filename = currentExportFormat === 'json' ? 'vaultlock-export.json' :
+                            currentExportFormat === 'csv' ? 'vaultlock-export.csv' :
+                            currentExportFormat === 'encrypted' ? 'vaultlock-export.enc' :
+                            'vaultlock-export.txt';
+            
+            const blob = new Blob([data], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                closeAllModals();
+            }
+        });
+    </script>
+</body>
+</html>
